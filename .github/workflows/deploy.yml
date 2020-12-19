@@ -37,7 +37,7 @@ jobs:
           docker build --cache-from $IMAGE_NAME -t $IMAGE_NAME:${GIT_SHA::8} -t $IMAGE_NAME:$timestamp -t $IMAGE_NAME:latest .
           docker push $IMAGE_NAME 
             
-  deploy?:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
