@@ -1,0 +1,33 @@
+{
+  "name": "iac",
+  "version": "1.0.0",
+  "main": "main.js",
+  "types": "main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "get": "cdktf get",
+    "build": "cdktf get && tsc",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "echo ok",
+    "upgrade": "npm i cdktf@latest cdktf-cli@latest",
+    "upgrade:next": "npm i cdktf@next cdktf-cli@next"
+  },
+  "engines": {
+    "node": ">=10.12"
+  },
+  "dependencies": {
+    "aws-cdk": "^1.79.0",
+    "@aws-cdk/aws-ec2": "*",
+    "@aws-cdk/aws-eks": "*",
+    "cdktf": "0.0.19",
+    "constructs": "^3.2.74"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.14",
+    "cdktf-cli": "0.0.19",
+    "typescript": "^4.1.3"
+  }
+}
