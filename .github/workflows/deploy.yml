@@ -25,23 +25,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
   
-      - name: Create release file (git revision info)
-        run: |
-          echo -e "sha: ${GITHUB_SHA}\ntag: ${GITHUB_REF}" # For debugging
-          echo -e "git:\n  sha: ${GITHUB_SHA}\n  tag: ${GITHUB_REF}" > release.yml
       - name: Build and Upload Image
         env:
           DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         run: |
           timestamp=$(date +"%Y%m%d%H%M")
-          echo $timestamp
-          echo ${{github.sha::8}}
-          echo ${GIT_SHA}
-
           docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_ACCESS_TOKEN
           docker pull $IMAGE_NAME || echo "Failed to pull $IMAGE_NAME image - Building from scratch"
-          docker build --cache-from $IMAGE_NAME -t $IMAGE_NAME:${GIT_SHA::8} -t $IMAGE_NAME:$timestamp -t $IMAGE_NAME:latest .
+          docker build --cache-from $IMAGE_NAME -t $IMAGE_NAME:${GITHUB_SHA::8} -t $IMAGE_NAME:$timestamp -t $IMAGE_NAME:latest .
           docker push $IMAGE_NAME 
             
   deploy:
