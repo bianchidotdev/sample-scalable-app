@@ -42,3 +42,7 @@ jobs:
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
+      # - name: Install dependencies
+      #   run: ./bin/install-deps.sh
+      - name: Validate dependencies
+        run: ./bin/check-deps.sh
