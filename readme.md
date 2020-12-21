@@ -115,7 +115,7 @@ kubectl apply -Rf manifests
 
 Right now manually import k8s grafana dashboard. Should be possible from configMap
 Click import, enter 3119 for cluster monitoring and 6417 for pod monitoring
-```
+
 
 ## Monitor the cluster
 ### Metrics server
@@ -150,7 +150,7 @@ open http://localhost:9090
 ### Grafana
 Get password
 ```sh
-export GRAFANA_PASSWORD=$(kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo)
+kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
 Port forward and open the dashboard
@@ -168,10 +168,10 @@ kubectl delete -f manifests/express-app-autoscaler.yaml
 kubectl scale deploy/express-app --replicas=20
 
 # Option 2:
-kubectl edit 
+kubectl edit hpa express-app # and change min replicas to 20
 ```
 
-Just scale up the deployment count. The cpu requests for each pod are way too high and will trigger cluster autoscaling prematurely for show
+The cpu requests for each pod are artificially too high and will trigger cluster autoscaling prematurely for show
 
 ### Horizontal Pod Autoscaling
 ```
