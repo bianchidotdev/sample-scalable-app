@@ -9,4 +9,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: express-app
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 20 # artificially low for demonstration
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60 # artificially low for demonstration
+
