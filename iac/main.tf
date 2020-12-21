@@ -1,8 +1,5 @@
 
 
-locals {
-  cluster_name = "express-eks-${random_string.suffix.result}"
-}
 
 resource "random_string" "suffix" {
   length  = 8
@@ -72,7 +69,9 @@ module "eks" {
   subnets         = module.vpc.private_subnets
 
   tags = {
-    Environment = var.environment
+    Environment                                       = var.environment
+    "k8s.io/cluster-autoscaler/enabled"               = "true"
+    "k8s.io/cluster-autoscaler/${local.cluster_name}" = "true"
   }
 
   vpc_id = module.vpc.vpc_id
@@ -93,12 +92,13 @@ module "eks" {
         Environment = var.environment
       }
       additional_tags = {
-        owner = var.owner_name
+        owner = "michaeldbianchi@gmail.com"
       }
     }
+
   }
 
-  map_roles                            = var.map_roles
-  map_users                            = var.map_users
-  map_accounts                         = var.map_accounts
+  map_roles    = var.map_roles
+  map_users    = var.map_users
+  map_accounts = var.map_accounts
 }
