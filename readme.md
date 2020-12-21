@@ -18,6 +18,7 @@ export AWS_SECRET_ACCESS_KEY=<secret_access_key>
 export AWS_REGION=us-east-1
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
 
+
 cd iac/
 # terraform steps
 terraform init
@@ -70,20 +71,19 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
 # install autoscaler
-helm install cluster-autoscaler --namespace kube-system autoscaler/cluster-autoscaler-chart --values=charts/cluster-autoscaler-values.yaml
+helm upgrade -i cluster-autoscaler --namespace kube-system autoscaler/cluster-autoscaler-chart --values=charts/cluster-autoscaler-values.yaml
 
 # install prometheus server
-helm install prometheus prometheus-community/prometheus \
+helm upgrade -i prometheus prometheus-community/prometheus \
     --namespace prometheus \
     --set alertmanager.persistentVolume.storageClass="gp2",server.persistentVolume.storageClass="gp2"
 
 # install grafana
-helm install grafana grafana/grafana \
+helm upgrade -i grafana grafana/grafana \
     --namespace grafana \
     --set persistence.storageClassName="gp2" \
     --set persistence.enabled=true \
     --values charts/grafana-values.yaml
-    # --set adminPassword='EKS!sAWSome' \
 
 
 # helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller \
@@ -94,6 +94,8 @@ helm install grafana grafana/grafana \
 
 kubectl apply -Rf manifests
 
+# Right now manually import k8s grafana dashboard. Should be possible from configMap
+# Click import, enter 3119 for cluster monitoring and 6417 for pod monitoring
 ```
 
 ## Monitor the cluster
@@ -134,17 +136,30 @@ export GRAFANA_PASSWORD=$(kubectl get secret --namespace grafana grafana -o json
 
 Port forward and open the dashboard
 ```sh
-port-forward -n grafana deploy/grafana 8080:3000
-open 
+kubectl port-forward -n grafana deploy/grafana 9091:3000
+open http://localhost:9091
 ```
 
 ## Test Autoscaling
 ### Cluster Autoscaling
+Either remove the autoscaler and scale the deployment, edit it to have a minimum of 10 pods, or run through the load generation from the horizontal pod autoscaling section below
+```sh
+# Option 1:
+kubectl delete -f manifests/express-app-autoscaler.yaml
+kubectl scale deploy/express-app --replicas=20
+
+# Option 2:
+kubectl edit 
+```
+
 Just scale up the deployment count. The cpu requests for each pod are way too high and will trigger cluster autoscaling prematurely for show
 
 ### Horizontal Pod Autoscaling
 ```
 kubectl run -it load-generator --image=busybox -- /bin/sh -c 'while true; do wget -q -O - http://express-app/expensive; done'
+
+# Review autoscaler with the following
+kubectl get hpa express-app -w
 ```
 
 
