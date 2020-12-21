@@ -33,6 +33,16 @@ kubectl apply -Rf manifests
 
 ```
 
+## Test Autoscaling
+### Cluster Autoscaling
+Just scale up the deployment count. The cpu requests for each pod are way too high and will trigger cluster autoscaling prematurely for show
+
+### Horizontal Pod Autoscaling
+```
+kubectl run -it load-generator --image=busybox -- /bin/sh -c 'while true; do wget -q -O - http://express-app/expensive; done'
+```
+
+
 ## TODO for MVP
 [ ] stand up eks cluster in reproducable way
 [ ] Set up ingress for eks
