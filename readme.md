@@ -15,23 +15,34 @@ Set up aws credentials
 ```sh
 export AWS_ACCESS_KEY_ID=<access_key_id>
 export AWS_SECRET_ACCESS_KEY=<secret_access_key>
-export AWS_REGION=us-east-1
-export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+```
 
+Either:
+1. Run `./bin/check-deps.sh && ./bin/setup-cluster.sh`
+2. follow the steps manually:
 
+Run Terraform
+```sh
 cd iac/
 # terraform steps
 terraform init
 terraform apply
-
-#
-aws eks --region $(terraform output region) update-kubeconfig --name $(terraform output cluster_id)
-
-kubectl apply -f manifests/namespaces.yaml
-
 export CLUSTER_NAME=$(terraform output -json | jq -r .cluster_id.value)
+```
 
-# Set up necessary values files in needed
+Configure kubectl
+```sh
+aws eks --region $(terraform output region) update-kubeconfig --name $(terraform output cluster_id)
+```
+
+Apply namespaces
+```sh
+kubectl apply -f manifests/namespaces.yaml
+```
+
+
+Set up necessary values files in needed
+```sh
 cat << EOF > charts/cluster-autoscaler-chart-values.yml
 awsRegion: $AWS_REGION
 
@@ -60,7 +71,10 @@ datasources:
       access: proxy
       isDefault: true
 EOF
+```
 
+Install helm charts
+```sh
 # add autoscaler chart repo
 helm repo add autoscaler https://kubernetes.github.io/autoscaler
 # add prometheus chart repo
@@ -91,11 +105,16 @@ helm upgrade -i grafana grafana/grafana \
 #   --set serviceAccount.create=false \
 #   --set serviceAccount.name=aws-load-balancer-controller \
 #   -n kube-system
+```
 
+Apply all k8s manifests
+```sh
 kubectl apply -Rf manifests
+```
 
-# Right now manually import k8s grafana dashboard. Should be possible from configMap
-# Click import, enter 3119 for cluster monitoring and 6417 for pod monitoring
+
+Right now manually import k8s grafana dashboard. Should be possible from configMap
+Click import, enter 3119 for cluster monitoring and 6417 for pod monitoring
 ```
 
 ## Monitor the cluster

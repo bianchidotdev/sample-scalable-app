@@ -10,7 +10,7 @@ DEPS=(
   terraform
 )
 
-echo "Installing required deps"
+echo "Checking required deps"
 
 EXIT_CODE=0
 for dependency in ${DEPS[@]}; do
