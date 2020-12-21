@@ -20,4 +20,25 @@ spec:
         name: express-app
         ports:
         - containerPort: 3000
-        resources: {}
+        resources:
+          requests:
+            cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  selector:
+    app: express-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+---

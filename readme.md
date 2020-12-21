@@ -22,7 +22,15 @@ terraform apply
 
 #
 aws eks --region $(terraform output region) update-kubeconfig --name $(terraform output cluster_id)
-kubectl apply -f manifests
+
+helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller \
+  --set clusterName=$CLUSTER_NAME \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  -n kube-system
+
+kubectl apply -Rf manifests
+
 ```
 
 ## TODO for MVP
@@ -34,6 +42,7 @@ kubectl apply -f manifests
 - How much effort is argocd really? Is it worth it?
 
 ## Optimizations for another time
+- IRSA
 - Argo CD for more k8s-native application of manifests
 - Terraform environments with tfvar files for overrides
 - Make the image smaller - likely needs alpine plus multi-stage build
