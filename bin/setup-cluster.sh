@@ -12,6 +12,7 @@ export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
 
 cd iac/
 # terraform steps
+terraform version
 terraform init
 terraform apply -auto-approve
 

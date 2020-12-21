@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-          export PATH="$HOME/.tfenv/bin:$PATH"
+          echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
           tfenv install
           tfenv use
       - name: Validate dependencies
