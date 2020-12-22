@@ -40,10 +40,14 @@ Apply namespaces
 kubectl apply -f manifests/namespaces.yaml
 ```
 
+Allow IRSA (required for cluster autoscaler)
+```sh
+eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
+```
 
 Set up necessary values files in needed
 ```sh
-cat << EOF > charts/cluster-autoscaler-chart-values.yml
+cat << EOF > charts/cluster-autoscaler-values.yaml
 awsRegion: $AWS_REGION
 
 rbac:
@@ -158,6 +162,8 @@ Port forward and open the dashboard
 kubectl port-forward -n grafana deploy/grafana 9091:3000
 open http://localhost:9091
 ```
+
+Import necessary dashboards (3119 - cluster, 6417 - pods)
 
 ## Test Autoscaling
 ### Cluster Autoscaling

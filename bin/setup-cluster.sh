@@ -24,8 +24,10 @@ kubectl apply -f manifests/namespaces.yaml
 
 export CLUSTER_NAME=$(terraform output -json | jq -r .cluster_id.value)
 
+eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
+
 # Set up necessary values files in needed
-cat << EOF > charts/cluster-autoscaler-chart-values.yml
+cat << EOF > charts/cluster-autoscaler-values.yaml
 awsRegion: $AWS_REGION
 
 rbac:

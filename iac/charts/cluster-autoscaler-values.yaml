@@ -10,5 +10,5 @@ rbac:
       eks.amazonaws.com/role-arn: "arn:aws:iam::201973737062:role/cluster-autoscaler"
 
 autoDiscovery:
-  clusterName: "express-eks-98dUl29m"
+  clusterName: express-eks-98dUl29m
   enabled: true
