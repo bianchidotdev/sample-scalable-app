@@ -38,19 +38,19 @@ variable "map_users" {
 variable "vpc_cidr_block" {
   description = "CIDR range for VPC"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "10.1.0.0/16"
 }
 
 variable "private_subnet_cidrs" {
   description = "CIDR ranges for public subnets"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  default     = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
 }
 
 variable "public_subnet_cidrs" {
   description = "CIDR ranges for public subnets"
   type        = list(string)
-  default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  default     = ["10.1.4.0/24", "10.1.5.0/24", "10.1.6.0/24"]
 }
 
 variable "owner_name" {
