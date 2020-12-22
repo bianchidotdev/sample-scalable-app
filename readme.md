@@ -23,6 +23,10 @@ Either:
 
 Run Terraform
 ```sh
+
+export AWS_REGION=us-east-1
+export AWS_DEFAULT_REGION=us-east-1
+
 cd iac/
 # terraform steps
 terraform init

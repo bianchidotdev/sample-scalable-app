@@ -8,6 +8,7 @@ else
 fi
 
 export AWS_REGION=us-east-1
+export AWS_DEFAULT_REGION=us-east-1
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
 
 cd iac/
