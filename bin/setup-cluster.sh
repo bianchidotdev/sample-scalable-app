@@ -80,11 +80,31 @@ helm upgrade -i grafana grafana/grafana \
     --set persistence.enabled=true \
     --values charts/grafana-values.yaml
 
+eksctl create iamserviceaccount \
+  --cluster $CLUSTER_NAME \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --attach-policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
 
-# helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller \
-#   --set clusterName=$CLUSTER_NAME \
-#   --set serviceAccount.create=false \
-#   --set serviceAccount.name=aws-load-balancer-controller \
-#   -n kube-system
+kubectl apply -f manifests/alb-controller/
+
+export LBC_VERSION="v2.0.0"
+
+export VPC_ID=$(aws eks describe-cluster \
+                --name ${CLUSTER_NAME} \
+                --query "cluster.resourcesVpcConfig.vpcId" \
+                --output text)
+
+helm upgrade -i aws-load-balancer-controller \
+    eks/aws-load-balancer-controller \
+    -n kube-system \
+    --set clusterName=${CLUSTER_NAME} \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=aws-load-balancer-controller \
+    --set image.tag="${LBC_VERSION}" \
+    --set region=${AWS_REGION} \
+    --set vpcId=${VPC_ID}
 
 kubectl apply -Rf manifests
