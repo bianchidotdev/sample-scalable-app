@@ -45,11 +45,19 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # tfenv
           git clone https://github.com/tfutils/tfenv.git ~/.tfenv
           export PATH="$HOME/.tfenv/bin:$PATH"	
           echo "$HOME/.tfenv/bin" >> $GITHUB_PATH
           tfenv install
           tfenv use
+          terraform version
+
+          # eksctl
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          eksctl version
+
       - name: Validate dependencies
         run: ./bin/check-deps.sh
       - name: Setup cluster

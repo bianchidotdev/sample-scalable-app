@@ -5,8 +5,9 @@ echo "Starting dependency checking"
 
 DEPS=(
   aws
-  kubectl
+  eksctl
   helm
+  kubectl
   terraform
 )
 
