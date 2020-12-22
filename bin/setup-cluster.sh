@@ -63,6 +63,7 @@ helm repo add autoscaler https://kubernetes.github.io/autoscaler
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 # add grafana chart repo
 helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add eks https://aws.github.io/eks-charts
 # update chart repos
 helm repo update
 
