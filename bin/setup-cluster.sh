@@ -45,7 +45,7 @@ autoDiscovery:
   enabled: true
 EOF
 
-cat << EOF > charts/grafana-values.yml
+cat << EOF > charts/grafana-values.yaml
 datasources:
   datasources.yaml:
     apiVersion: 1
@@ -75,12 +75,16 @@ helm upgrade -i prometheus prometheus-community/prometheus \
     --namespace prometheus \
     --set alertmanager.persistentVolume.storageClass="gp2",server.persistentVolume.storageClass="gp2"
 
-# install grafana
-helm upgrade -i grafana grafana/grafana \
-    --namespace grafana \
-    --set persistence.storageClassName="gp2" \
-    --set persistence.enabled=true \
-    --values charts/grafana-values.yaml
+# install grafana (conditionally so as to not clobber admin secret)
+if bash -c 'helm list -A | grep grafana'; then
+  echo "Grafana is already installed"
+else
+  helm upgrade -i grafana grafana/grafana \
+      --namespace grafana \
+      --set persistence.storageClassName="gp2" \
+      --set persistence.enabled=true \
+      --values charts/grafana-values.yaml
+fi
 
 eksctl create iamserviceaccount \
   --cluster $CLUSTER_NAME \
