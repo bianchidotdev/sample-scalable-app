@@ -41,19 +41,15 @@ spec:
 
 ---
 
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
 metadata:
-  name: ingress-express-app
-  namespace: default
-  annotations:
-    # use the shared ingress-nginx
-    kubernetes.io/ingress.class: "nginx"
+  name: express-app
 spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: express-app
-          servicePort: 80
+  maxReplicas: 20
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: express-app
+  targetCPUUtilizationPercentage: 20 # artificially low for demonstration
