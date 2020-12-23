@@ -48,7 +48,7 @@ Imperatively applied, but idempotent
 ---
 
 
-### Major Components
+### Major Components/Decisions
 
 *Ingress Controller*
 
@@ -68,6 +68,14 @@ Ideally we would use an ALB either directly created by the services in the EKS c
 
 Because why worry about patching servers for no reason. In all reality, I'd use managed node groups unless there was a really compelling reason to use a custom AMI.
 
+*eksctl, kubectl, and helm*
+
+In the scope of this exercise, I used a variety of eksctl commands, remote helm charts, and declarative manifests in this repo to set up this cluster.
+
+In a real production cluster, I would want everything to be declaratively provisioned.
+
+I configured the deploy such that even though there are imperative commands, the deploy script is idempotent
+
 *GitHub Actions*
 
 Used as both CI and CD currently, to test/lint the codebase, build and push the docker image, and deploy all the TF and K8s resources
@@ -75,14 +83,12 @@ Used as both CI and CD currently, to test/lint the codebase, build and push the 
 All of this is fairly fragile currently and would benefit from a more robust CD solution.
 
 
-
-### Assumptions
-
 ### Optimizations for another time
 - Dynamic image tagging - There are rollback challenges when you use a static image tag for deployment
 - HTTPS
 - Separate repos for Networking (VPC/subnet/NAT), EKS Cluster, and application
 - ALB in front of EKS cluster (either through)
+- Log forwarding to some log aggregator/indexer
 - Ideally in production, we would have access to resources like Prometheus, Grafana, K8s dashboard through an internal ingress controller accessible only via VPN
 - Additional observability of networking into applications, providing metrics such as response time, and tracing of each request (solvable using Envoy Sidecars)
 - Some namespacing of applications to map to domains/teams
