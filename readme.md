@@ -96,6 +96,7 @@ All of this is fairly fragile currently and would benefit from a more robust CD 
 1. Argo CD (or other) for more k8s-native application of manifests
 1. Some namespacing of applications to map to domains/teams
 1. Make the image smaller - likely needs alpine plus multi-stage build
+1. Standard helm chart for all applications to derive from (rather than requiring developers to manage all of their k8s manifests)
 1. Terraform environments with tfvar files for overrides (potentially used for multi-region as well)
 
 
