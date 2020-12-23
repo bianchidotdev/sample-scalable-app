@@ -14,28 +14,29 @@ docker run -p 8080:3000 -d michaeldbianchi/express-app
 
 What's deployed and how:
 
-### Terraform
-- VPC
+#### Terraform
+- Networking
+  - VPC
   - Subnets (public and private)
   - Route Tables
   - Internet Gateway
   - NAT Gateway
 - EKS Cluster
-  - IAM Role
+  - IAM Roles
 - Managed Node Group
   - Security Groups
   - CNI Policy
-  - IAM Role
+  - IAM Roles
 - Cluster Autoscaler Role
 
-### Helm
+#### Helm
 
 Imperatively applied, but idempotent
 - Cluster Autoscaler
 - Prometheus
 - Grafana
 
-### Kubernetes Manifests
+#### Kubernetes Manifests
 
 - Express App
   - Deployment
