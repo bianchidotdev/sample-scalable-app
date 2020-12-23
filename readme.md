@@ -12,6 +12,8 @@ docker run -p 8080:3000 -d michaeldbianchi/express-app
 
 ## Architecture
 
+What's deployed and how:
+
 ### Terraform
 - VPC
   - Subnets (public and private)
@@ -62,17 +64,17 @@ A more powerful ingress controller could also provide metrics, tracing, and supp
 
 ALB worked just fine in front of the app, but not so much in front of NGINX for some reason. 
 
-Ideally we would use an ALB either directly created by the services in the EKS cluster, or in front of the NLBs created by the cluster in order to provide a WAF.
+Ideally we would use an ALB either directly created by the ingress controller services in the EKS cluster, or in front of the NLBs created by the cluster in order to provide a WAF.
 
 #### Managed Node Groups
 
 Because why worry about patching servers for no reason. In all reality, I'd use managed node groups unless there was a really compelling reason to use a custom AMI.
 
-#### **eksctl, kubectl, and helm
+#### eksctl, helm, and kubectl
 
 In the scope of this exercise, I used a variety of eksctl commands, remote helm charts, and declarative manifests in this repo to set up this cluster.
 
-In a real production cluster, I would want everything to be declaratively provisioned.
+In a real production cluster, I would want everything to be declaratively configured. There's no techincal reason I know that we couldn't get there, just not enough time for the exercise.
 
 I configured the deploy such that even though there are imperative commands, the deploy script is idempotent
 
@@ -83,18 +85,18 @@ Used as both CI and CD currently, to test/lint the codebase, build and push the 
 All of this is fairly fragile currently and would benefit from a more robust CD solution.
 
 
-### Optimizations for another time
+### Optimizations for another time (in rough order of importance)
 1. HTTPS
-1. Dynamic image tagging - There are rollback challenges when you use a static image tag for deployment
 1. Separate repos for Networking (VPC/subnet/NAT), EKS Cluster, and application
+1. Dynamic image tagging - There are rollback challenges when you use a static image tag for deployment
 1. ALB in front of EKS cluster (either through)
 1. Log forwarding to some log aggregator/indexer
 1. Ideally in production, we would have access to resources like Prometheus, Grafana, K8s dashboard through an internal ingress controller accessible only via VPN
 1. Additional observability of networking into applications, providing metrics such as response time, and tracing of each request (solvable using Envoy Sidecars)
-1. Some namespacing of applications to map to domains/teams
 1. Argo CD (or other) for more k8s-native application of manifests
-1. Terraform environments with tfvar files for overrides (potentially used for multi-region as well)
+1. Some namespacing of applications to map to domains/teams
 1. Make the image smaller - likely needs alpine plus multi-stage build
+1. Terraform environments with tfvar files for overrides (potentially used for multi-region as well)
 
 
 ## Deploying
@@ -140,6 +142,10 @@ Update app code as needed, and deploy the code using the following:
 
 ```sh
 ./bin/deploy-app.sh express-app-blue
+
+# port forward to test new deploy
+kubectl port-forward deploy/express-app-blue 8080:3000
+open http://localhost:8080
 ```
 
 Update `iac/manifests/express-app-ingress.yaml` to point to the `express-app-blue` service and run:
