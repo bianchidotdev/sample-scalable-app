@@ -25,7 +25,7 @@ Steps in script:
 1. Apply namespaces (done early so helm charts can be applied into them)
 1. Enable IRSA (required for cluster autoscaler)
 1. Set up necessary values files needed for helm charts (interpolates current AWS Account ID and Cluster Name)
-1. Install helm charts for Cluster Autoscaler, Prometheus, Grafana, and ALB Controller
+1. Install helm charts for Cluster Autoscaler, Prometheus, and Grafana # formerly ALB Controller
 1. Apply all k8s manifests
 
 Extra:
