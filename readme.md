@@ -50,7 +50,7 @@ Imperatively applied, but idempotent
 
 ### Major Components/Decisions
 
-**Ingress Controller**
+#### Ingress Controller
 
 Using NGINX ingress controller to meet simple routing needs. I attempted to use Contour, which has an envoy proxy service, but it wasn't working.
 
@@ -58,17 +58,17 @@ Using an ingress controller to limit the # of required Load Balancers for the cl
 
 A more powerful ingress controller could also provide metrics, tracing, and support for canary style deployments
 
-**NLB in front of NGINX Ingress Controller**
+#### NLB in front of NGINX Ingress Controller
 
 ALB worked just fine in front of the app, but not so much in front of NGINX for some reason. 
 
 Ideally we would use an ALB either directly created by the services in the EKS cluster, or in front of the NLBs created by the cluster in order to provide a WAF.
 
-**Managed Node Groups**
+#### Managed Node Groups
 
 Because why worry about patching servers for no reason. In all reality, I'd use managed node groups unless there was a really compelling reason to use a custom AMI.
 
-**eksctl, kubectl, and helm**
+#### **eksctl, kubectl, and helm
 
 In the scope of this exercise, I used a variety of eksctl commands, remote helm charts, and declarative manifests in this repo to set up this cluster.
 
@@ -76,7 +76,7 @@ In a real production cluster, I would want everything to be declaratively provis
 
 I configured the deploy such that even though there are imperative commands, the deploy script is idempotent
 
-**GitHub Actions**
+#### GitHub Actions
 
 Used as both CI and CD currently, to test/lint the codebase, build and push the docker image, and deploy all the TF and K8s resources
 
