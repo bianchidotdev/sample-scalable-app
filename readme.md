@@ -84,17 +84,17 @@ All of this is fairly fragile currently and would benefit from a more robust CD 
 
 
 ### Optimizations for another time
-- Dynamic image tagging - There are rollback challenges when you use a static image tag for deployment
-- HTTPS
-- Separate repos for Networking (VPC/subnet/NAT), EKS Cluster, and application
-- ALB in front of EKS cluster (either through)
-- Log forwarding to some log aggregator/indexer
-- Ideally in production, we would have access to resources like Prometheus, Grafana, K8s dashboard through an internal ingress controller accessible only via VPN
-- Additional observability of networking into applications, providing metrics such as response time, and tracing of each request (solvable using Envoy Sidecars)
-- Some namespacing of applications to map to domains/teams
-- Argo CD (or other) for more k8s-native application of manifests
-- Terraform environments with tfvar files for overrides (potentially used for multi-region as well)
-- Make the image smaller - likely needs alpine plus multi-stage build
+1. HTTPS
+1. Dynamic image tagging - There are rollback challenges when you use a static image tag for deployment
+1. Separate repos for Networking (VPC/subnet/NAT), EKS Cluster, and application
+1. ALB in front of EKS cluster (either through)
+1. Log forwarding to some log aggregator/indexer
+1. Ideally in production, we would have access to resources like Prometheus, Grafana, K8s dashboard through an internal ingress controller accessible only via VPN
+1. Additional observability of networking into applications, providing metrics such as response time, and tracing of each request (solvable using Envoy Sidecars)
+1. Some namespacing of applications to map to domains/teams
+1. Argo CD (or other) for more k8s-native application of manifests
+1. Terraform environments with tfvar files for overrides (potentially used for multi-region as well)
+1. Make the image smaller - likely needs alpine plus multi-stage build
 
 
 ## Deploying
